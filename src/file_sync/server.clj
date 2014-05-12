@@ -36,7 +36,5 @@
                                  (pr-str  {:type :files
                                            :files (to-files-map files-changes)})))))
 
-(watch-files "test" #(println "Files changed" (to-files-map %)))
-
-(tcp/start-tcp-server #'handler {:port 10000 :frame (string :utf-8 :delimiters ["\r\n"])})
+;(tcp/start-tcp-server #'handler {:port 10000 :frame (string :utf-8 :delimiters ["\r\n"])})
 

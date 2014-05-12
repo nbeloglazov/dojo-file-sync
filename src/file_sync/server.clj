@@ -16,8 +16,9 @@
 
 (defn handler [ch client-info]
   (receive-all ch
-    #(do (println "Server" %)
-         (enqueue ch (str "You said " %)))))
+    #(let [message (read-string %)]
+       (println "Serverdfdfd" message)
+       (handle-message ch message))))
 
 (tcp/start-tcp-server #'handler {:port 10000 :frame (string :utf-8 :delimiters ["\r\n"])})
 

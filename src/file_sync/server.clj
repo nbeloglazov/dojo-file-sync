@@ -26,15 +26,22 @@
     (on-change on-change-fn)))
 
 
-(defn handler [ch client-info]
+(defn handler [directory ch client-info]
+  (println "Client connected" client-info)
   (receive-all ch
     #(let [message (read-string %)]
-       (println "Serverdfdfd" message)
+       (println "Serverd" message)
        (handle-message ch message)))
-  (watch-files "test" (fn [files-changes]
+  (watch-files directory (fn [files-changes]
                         (enqueue ch
                                  (pr-str  {:type :files
                                            :files (to-files-map files-changes)})))))
 
-;(tcp/start-tcp-server #'handler {:port 10000 :frame (string :utf-8 :delimiters ["\r\n"])})
+(defn start-server [directory port]
+  (tcp/start-tcp-server (partial handler directory) {:port (if (string? port) (Integer/parseInt port) port)
+                                                     :frame (string :utf-8 :delimiters ["\r\n"])})
+  (println "Server listens on port" port "directory" directory))
+
+
+;(start-server "src" 12345)
 

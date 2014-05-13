@@ -1,6 +1,9 @@
 # file-sync
 
-A Clojure library designed to ... well, that part is up to you.
+Simple file sync tool hacked during London Clojure Dojo at uSwitch. It consists of server and client: 
+
+* server sends changed files to all connected clients;
+* clients listen to file updates from server and update their local folder accordingly;
 
 ## Usage
 

@@ -27,5 +27,4 @@
     (println "Client connected")
     ch))
 
-;(start-client "tmp2" "localhost" 10000)
-;(start-client "backup" "localhost" 12345)
+;(start-client "backup" "localhost" 10000)

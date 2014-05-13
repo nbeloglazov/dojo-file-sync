@@ -4,17 +4,6 @@
             [gloss.core :refer [string]]
             [watchtower.core :refer :all]))
 
-(def files (atom {"one.txt" "hello"
-                  "two.txt" "world"}))
-
-
-(defmulti handle-message (fn [channel message] (:type message)))
-
-(defmethod handle-message :get-all-files
-  [channel message]
-  (enqueue channel (pr-str {:type :files
-                            :files @files})))
-
 (defn to-files-map [file-changes]
   (into {}
         (for [file file-changes]
@@ -28,18 +17,17 @@
 
 (defn handler [directory ch client-info]
   (println "Client connected" client-info)
-  (receive-all ch
-    #(let [message (read-string %)]
-       (println "Serverd" message)
-       (handle-message ch message)))
-  (watch-files directory (fn [files-changes]
-                        (enqueue ch
-                                 (pr-str  {:type :files
-                                           :files (to-files-map files-changes)})))))
+  (watch-files directory
+    (fn [files-changes]
+      (println "Server: files changed" files-changes)
+      (enqueue ch
+        (pr-str  {:type :files
+                  :files (to-files-map files-changes)})))))
 
 (defn start-server [directory port]
-  (tcp/start-tcp-server (partial handler directory) {:port (if (string? port) (Integer/parseInt port) port)
-                                                     :frame (string :utf-8 :delimiters ["\r\n"])})
+  (tcp/start-tcp-server (partial handler directory)
+                        {:port (if (string? port) (Integer/parseInt port) port)
+                         :frame (string :utf-8 :delimiters ["\r\n"])})
   (println "Server listens on port" port "directory" directory))
 
 
